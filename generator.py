@@ -36,9 +36,9 @@ def generate_smtwt_instance(task_number, seed=123):
     Returns:
         p,w,d: execution time, weight, deadline
     """
-    p = np.zeros(task_number)
-    w = np.zeros(task_number)
-    d = np.zeros(task_number)
+    p = np.zeros(task_number).astype(int)
+    w = np.zeros(task_number).astype(int)
+    d = np.zeros(task_number).astype(int)
     
     g = RandomNumberGenerator(seedVaule=seed)
     
@@ -50,10 +50,6 @@ def generate_smtwt_instance(task_number, seed=123):
     
     for i in range(task_number):
         d[i] = g.nextInt(1,S)
-        
-    p.astype(int)
-    w.astype(int)
-    d.astype(int)
         
     return p, w, d
 
