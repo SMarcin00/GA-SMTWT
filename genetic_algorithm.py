@@ -40,10 +40,10 @@ class Genetic_algoritm:
     
     def fitness_score(self):
         self.scores = np.array([self.fitness_function(x) for x in self.population])
-        best_score = np.argmin(self.scores)
-        if best_score < self.best_individual_score:
-            self.best_individual_score = best_score
-            self.best_individual = self.population[best_score]
+        best_score_index = np.argmin(self.scores)
+        if self.scores[best_score_index] < self.best_individual_score:
+            self.best_individual_score = self.scores[best_score_index]
+            self.best_individual = self.population[best_score_index]
 
     
     # def check_individual(self, individual):
@@ -61,27 +61,38 @@ class Genetic_algoritm:
         
     
     def crossover(self, individual1, individual2):       
+        # individual1 = np.array([0,1,2,3,4])
+        # individual2 = np.array([0,2,3,1,4])
+        
         size = len(individual1)
         
         index1 = np.random.randint(0, size-2)
         index2 = np.random.randint(index1+1, size-1)
         
         # crossing        
-        new_individual1 = np.zeros(size).astype(int)
-        new_individual2 = np.zeros(size).astype(int)
+        new_individual1 = np.full(size, -1).astype(int)
+        new_individual2 = np.full(size, -1).astype(int)
+        
+        new_individual1[index1:index2] = individual2[index1:index2]
+        new_individual2[index1:index2] = individual1[index1:index2]
+        
         for i in range(size):
-            if i in range(index1, index2):
-                new_individual1[i] = individual1[i]
-                new_individual2[i] = individual2[i]
-            else:
-                if individual2[i] in individual1[index1:index2]:
-                    new_individual1[i] = individual2[list(individual1).index(individual2[i])]
-                else:
-                    new_individual1[i] = individual2[i]
-                if individual1[i] in individual2[index1:index2]:
-                    new_individual2[i] = individual1[list(individual2).index(individual1[i])]
-                else:
-                    new_individual2[i] = individual1[i]
+            gen1 = individual1[i]
+            gen2 = individual2[i]
+            if gen1 not in new_individual1:
+                new_individual1[list(new_individual1).index(-1)] = gen1
+            if gen2 not in new_individual2:
+                new_individual2[list(new_individual2).index(-1)] = gen2  
+                
+            # else:
+            #     if individual2[i] in individual1[index1:index2]:
+            #         new_individual1[i] = individual2[list(individual1).index(individual2[i])]
+            #     else:
+            #         new_individual1[i] = individual2[i]
+            #     if individual1[i] in individual2[index1:index2]:
+            #         new_individual2[i] = individual1[list(individual2).index(individual1[i])]
+            #     else:
+            #         new_individual2[i] = individual1[i]
         
         # self.check_individual(new_individual1)
         # self.check_individual(new_individual2)
@@ -101,8 +112,7 @@ class Genetic_algoritm:
             
             # self.check_individual(individual)
             
-        return individual
-        
+        return individual 
         
     
     def run(self):
@@ -112,12 +122,13 @@ class Genetic_algoritm:
             new_population = np.zeros((population_size, individual_size)).astype(int)
             # choosing parents
             parents = np.zeros((population_size, individual_size)).astype(int)
-            for i in range(0, population_size, 2):
-                parents[i] = self.tournament_selection()
-                parents[i+1] = self.tournament_selection()
-                # parent = parents[i]
-                # while(parent.all() == parent[i+1].all()):
-                #     parents[i+1] = self.tournament_selection()
+            parent = self.tournament_selection()
+            for i in range(population_size):
+                new_parent = self.tournament_selection()
+                while(np.array_equal(parent, new_parent)):
+                    new_parent = self.tournament_selection()
+                parents[i] = new_parent
+                parent = new_parent
 
             # crossing
             for i in range(0, population_size, 2):
@@ -137,6 +148,7 @@ class Genetic_algoritm:
             self.best_array.append(self.best_individual)
             self.score_array.append(self.best_individual_score)
             self.population_score_array.append(sum(self.scores))
+            
             
             
        
