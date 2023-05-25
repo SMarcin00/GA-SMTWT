@@ -51,5 +51,9 @@ def generate_smtwt_instance(task_number, seed=123):
     for i in range(task_number):
         d[i] = g.nextInt(1,S)
         
+    p.astype(int)
+    w.astype(int)
+    d.astype(int)
+        
     return p, w, d
 
