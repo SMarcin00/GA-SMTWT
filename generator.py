@@ -1,4 +1,5 @@
 import math
+import numpy as np
 
 
 class RandomNumberGenerator:
@@ -23,3 +24,34 @@ class RandomNumberGenerator:
         high *= 100000
         val = self.nextInt(low, high) / 100000.0
         return val
+
+task_number = 3
+seed =123
+
+def generate_smtwt_instance(task_number, seed=123):
+    """Function to generate smtwt instance
+
+    Args:
+        task_number (_type_): number of task given to the machine
+        seed (int, optional): generator seed
+
+    Returns:
+        p,w,d: execution time, weight, deadline
+    """
+    p = np.zeros(task_number)
+    w = np.zeros(task_number)
+    d = np.zeros(task_number)
+    
+    g = RandomNumberGenerator(seedVaule=seed)
+    
+    for i in range(task_number):
+        p[i] = g.nextInt(1,30)
+        w[i] = g.nextInt(1,30)
+    
+    S = np.sum(p)
+    
+    for i in range(task_number):
+        d[i] = g.nextInt(1,S)
+        
+    return p, w, d
+
