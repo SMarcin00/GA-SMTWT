@@ -125,8 +125,11 @@ class Genetic_algoritm:
             parent = self.tournament_selection()
             for i in range(population_size):
                 new_parent = self.tournament_selection()
-                while(np.array_equal(parent, new_parent)):
+                stop_iter = 0
+                while(np.array_equal(parent, new_parent) and stop_iter<10):
                     new_parent = self.tournament_selection()
+                    stop_iter+=1
+                    
                 parents[i] = new_parent
                 parent = new_parent
 
