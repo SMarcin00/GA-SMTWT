@@ -9,9 +9,9 @@ from tqdm import tqdm
 class Particle:
     def __init__(self, bounds, n_dimensions, inertia_weight, cognitive_c, social_c):
         self.n_dimensions = n_dimensions
-        self.inertia_weight = inertia_weight  # constant inertia weight (how much to weigh the previous velocity)
-        self.cognitive_c = cognitive_c  # cognative constant
-        self.social_c = social_c  # social constant
+        self.inertia_weight = inertia_weight
+        self.cognitive_c = cognitive_c
+        self.social_c = social_c
 
         self.position_i = []
         self.velocity_i = []
@@ -26,7 +26,6 @@ class Particle:
     def evaluate(self, cost_function):
         self.err_i = cost_function(self.position_i)
 
-        # check to see if the current position is an individual best
         if self.err_i < self.err_best_i or self.err_best_i == -1:
             self.pos_best_i = self.position_i.copy()
             self.err_best_i = self.err_i
@@ -48,11 +47,9 @@ class Particle:
         for i in range(0, self.n_dimensions):
             self.position_i[i] = self.position_i[i] + self.velocity_i[i]
 
-            # adjust maximum position if necessary
             if self.position_i[i] > bounds[i][1]:
                 self.position_i[i] = bounds[i][1]
 
-            # adjust minimum position if necessary
             if self.position_i[i] < bounds[i][0]:
                 self.position_i[i] = bounds[i][0]
 
@@ -68,29 +65,24 @@ def minimize(
     max_iter,
     verbose=False,
 ):
-    err_best_g = -1  # best error for group
-    pos_best_g = []  # best position for group
+    err_best_g = -1
+    pos_best_g = []
 
-    # establish the swarm
     swarm = []
     for i in range(0, num_particles):
         swarm.append(
             Particle(bounds, dimensions, inertia_weight, cognitive_c, social_c)
         )
 
-    # begin optimization loop
     i = 1
     while i <= max_iter:
-        # cycle through particles in swarm and evaluate fitness
         for j in range(0, num_particles):
             swarm[j].evaluate(cost_function)
 
-            # determine if current particle is the best (globally)
             if swarm[j].err_i < err_best_g or err_best_g == -1:
                 pos_best_g = list(swarm[j].position_i)
                 err_best_g = float(swarm[j].err_i)
 
-        # cycle through swarm and update velocities and position
         for j in range(0, num_particles):
             swarm[j].update_velocity(pos_best_g)
             swarm[j].update_position(bounds)
@@ -119,7 +111,6 @@ def sphere(X):
 def main():
     N_DIMENSIONS = 2
 
-    # input bounds [(x1_min, x1_max), (x2_min, x2_max), ...]
     BOUNDS = [(-100, 100)] * N_DIMENSIONS
 
     SEEDS = [1, 42, 2137, 119]
@@ -161,7 +152,6 @@ def main():
                                 social_c=social_c,
                                 num_particles=num_particles,
                                 max_iter=max_iter,
-                                # verbose=True,
                             )
 
                             pso_result_rows.append(
