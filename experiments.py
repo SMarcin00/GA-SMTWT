@@ -18,7 +18,7 @@ random.seed(SEED)
 
 seed_values = [1, 42, 321, 2137, 321, 1435]
 population_sizes = [10, 20, 30, 40, 50, 60]
-mutation_probabilities = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
+mutation_probabilities = [x/100 for x in range(5, 95, 5)]
 t_sizes = [x for x in range(2,30,2)]
 iterations = [10, 30, 50, 70, 90]
 
@@ -218,4 +218,4 @@ def experiment_iteration():
     print(f"Results of g_a saved to {ga_out}\n\n")
     
 
-experiment_tsize()
+experiment_mutation_probability()
